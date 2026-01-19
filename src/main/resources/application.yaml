@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: apollum
+  datasource:
+    url: jdbc:postgresql://localhost:5432/apollum?useSSL=false
+    username: postgres
+    password: 123
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true # To see all SQL statements formed by Hibernate
+    hibernate:
+      ddl-auto: validate # This will create schemas and delete them automatically when application stops and runs.
+                       # Use `validate` or `none` for production
+    properties:
+      hibernate:
+        format_sql: false # Format SQL when printing to console.
+  sql:
+    init:
+      mode: never # This tells spring "when" to run SQL init scripts
+      data-locations: classpath:data.sql
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /openapi.json
+  swagger-ui:
+    enabled: true
+    path: /swagger
+    url: /openapi.json
+    syntaxHighlight:
+      theme: obsidian
+    disable-swagger-default-url: true
+    use-root-path: true
+    tryItOutEnabled: true
+    persistAuthorization: false
+    oauth:
+      appName: ''
+      clientId: ''
+      clientSecret: ''
+      scopes: ''
+
+#scalar:
+#  url: /openapi.json
+#  path: /explorer
+#  pageTitle: "Apollum API Explorer"
+#  darkMode: true
+#  favicon: favicon.png
+#  servers:
+#    - url: http://localhost:8080
+#      description: Localhost
+#  defaultOpenAllTags: false
+#  enableTelemetry: false
