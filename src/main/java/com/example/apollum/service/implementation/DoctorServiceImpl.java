@@ -10,14 +10,15 @@ import com.example.apollum.models.error.SysException;
 import com.example.apollum.repository.AppointmentRepository;
 import com.example.apollum.repository.DepartmentRepository;
 import com.example.apollum.repository.DoctorRepository;
+import com.example.apollum.repository.EntitySpecification;
 import com.example.apollum.service.AppointmentService;
 import com.example.apollum.service.DepartmentService;
 import com.example.apollum.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -110,8 +111,30 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Page<GetDoctorResponse> getAllDoctors(SearchDoctorsRequest request, Pageable pageable) {
-        throw new NotImplementedException();
+    public Page<GetDoctorResponse> searchDoctors(SearchDoctorsRequest request, Pageable pageable) {
+        Specification<Doctor> spec =
+                Specification.where(EntitySpecification.baseCondition());
+
+        if (request.name() != null && !request.name().isBlank()) {
+            spec = spec.and(
+                    EntitySpecification.withNameContaining(request.name())
+            );
+        }
+
+        if (request.email() != null && !request.email().isBlank()) {
+            spec = spec.and(
+                    EntitySpecification.withEmailContaining(request.email())
+            );
+        }
+
+        if (request.specialization() != null && !request.specialization().isBlank()) {
+            spec = spec.and(
+                    EntitySpecification.withSpecialization(request.specialization())
+            );
+        }
+
+        Page<Doctor> doctors = doctorRepo.findAll(spec, pageable);
+        return doctors.map(DoctorService::toResponse);
     }
 
     @Override

@@ -8,14 +8,15 @@ import com.example.apollum.models.error.MessageConstants;
 import com.example.apollum.models.error.SysException;
 import com.example.apollum.repository.DepartmentRepository;
 import com.example.apollum.repository.DoctorRepository;
+import com.example.apollum.repository.EntitySpecification;
 import com.example.apollum.service.DepartmentService;
 import com.example.apollum.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -100,7 +101,15 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Page<GetDepartmentResponse> search(SearchDepartmentRequest request, Pageable pageable) {
-        throw new NotImplementedException();
+        Specification<Department> query = Specification.where(EntitySpecification.baseCondition());
+
+        if (request.name() != null && !request.name().isBlank()) {
+            query = query.and(EntitySpecification.withNameContaining(request.name()));
+        }
+
+        Page<Department> departments = departmentRepo.findAll(query, pageable);
+
+        return departments.map(DepartmentService::toResponse);
     }
 
     @Override

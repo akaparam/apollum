@@ -7,13 +7,14 @@ import com.example.apollum.models.error.MessageConstants;
 import com.example.apollum.models.error.SysException;
 import com.example.apollum.models.type.AppointmentStatusType;
 import com.example.apollum.repository.AppointmentRepository;
+import com.example.apollum.repository.EntitySpecification;
 import com.example.apollum.service.AppointmentService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -127,6 +128,59 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Page<GetAppointmentResponse> search(SearchAppointmentRequest request, Pageable pageable) {
-        throw new NotImplementedException();
+        Specification<Appointment> spec =
+                Specification.where(EntitySpecification.baseCondition());
+
+        if (request.title() != null && !request.title().isBlank()) {
+            spec = spec.and(
+                    EntitySpecification.withTitleContaining(request.title())
+            );
+        }
+
+        if (request.status() != null && !request.status().isBlank()) {
+            spec = spec.and(
+                    EntitySpecification.withStatus(request.status())
+            );
+        }
+
+        if (request.slot() != null) {
+            AppointmentSlot s = request.slot();
+
+            if (s.startTimeAfter() != null) {
+                spec = spec.and(
+                        EntitySpecification.startAfter(
+                                LocalDateTime.parse(s.startTimeAfter())
+                        )
+                );
+            }
+
+            if (s.startTimeBefore() != null) {
+                spec = spec.and(
+                        EntitySpecification.startBefore(
+                                LocalDateTime.parse(s.startTimeBefore())
+                        )
+                );
+            }
+
+            if (s.endTimeAfter() != null) {
+                spec = spec.and(
+                        EntitySpecification.endAfter(
+                                LocalDateTime.parse(s.endTimeAfter())
+                        )
+                );
+            }
+
+            if (s.endTimeBefore() != null) {
+                spec = spec.and(
+                        EntitySpecification.endBefore(
+                                LocalDateTime.parse(s.endTimeBefore())
+                        )
+                );
+            }
+        }
+
+        Page<Appointment> page = appointmentRepo.findAll(spec, pageable);
+        return page.map(AppointmentService::toResponse);
+
     }
 }

@@ -14,7 +14,7 @@ public interface DoctorService {
     void updateSpec(UUID doctorId, UpdateDoctorSpecializationRequest request);
     void delete(UUID doctorId);
 
-    Page<GetDoctorResponse> getAllDoctors(SearchDoctorsRequest request, Pageable pageable);
+    Page<GetDoctorResponse> searchDoctors(SearchDoctorsRequest request, Pageable pageable);
     List<GetDepartmentResponse> listEnrolledDepartments(UUID doctorId);
 
     Page<GetAppointmentResponse> getAllAppointments(UUID doctorId, Pageable pageable);

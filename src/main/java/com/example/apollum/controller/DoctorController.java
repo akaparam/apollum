@@ -59,7 +59,7 @@ public class DoctorController {
             @RequestBody SearchDoctorsRequest request,
             @PageableDefault(size = 5, sort = "name", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        Page<GetDoctorResponse> page = doctorServ.getAllDoctors(request, pageable);
+        Page<GetDoctorResponse> page = doctorServ.searchDoctors(request, pageable);
         return ResponseEntity.ok(page);
     }
 

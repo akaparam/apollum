@@ -8,16 +8,18 @@ import com.example.apollum.models.error.AppException;
 import com.example.apollum.models.error.MessageConstants;
 import com.example.apollum.models.error.SysException;
 import com.example.apollum.repository.AppointmentRepository;
+import com.example.apollum.repository.EntitySpecification;
 import com.example.apollum.repository.InsuranceRepository;
 import com.example.apollum.repository.PatientRepository;
 import com.example.apollum.service.AppointmentService;
 import com.example.apollum.service.PatientService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.*;
 import jakarta.transaction.Transactional;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -138,7 +140,53 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Page<GetPatientResponse> search(SearchPatientRequest request, Pageable pageable) {
-        throw new NotImplementedException();
+
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<Patient> query = cb.createQuery(Patient.class);
+//
+//        Root<Patient> root = query.from(Patient.class);
+//
+//        query.select(root);
+//
+//        TypedQuery<Patient> tq = em.createQuery(query);
+//        List<Patient> patients = tq.getResultList();
+//
+//
+//        return null;
+
+        Specification<Patient> spec = Specification.where(EntitySpecification.baseCondition());
+
+        if (request.nameContaining().isPresent()) {
+            spec = spec.and(EntitySpecification.withNameContaining(request.nameContaining().get()));
+        }
+
+        if (request.emailContaining().isPresent()) {
+            spec = spec.and(EntitySpecification.withEmailContaining(request.emailContaining().get()));
+        }
+
+        if (request.age().isPresent()) {
+            if (request.age().get().greaterThan().isPresent()) {
+                int age = request.age().get().greaterThan().get();
+                spec = spec.and(EntitySpecification.withDobLessThan(LocalDate.now().minusYears(age)));
+            }
+
+            if (request.age().get().lessThan().isPresent()) {
+                int age = request.age().get().lessThan().get();
+                spec = spec.and(EntitySpecification.withDobGreaterThan(LocalDate.now().minusYears(age)));
+            }
+        }
+
+        if (request.gender().isPresent()) {
+            spec = spec.and(EntitySpecification.withGender(request.gender().get()));
+        }
+
+        if (request.bloodGroup().isPresent()) {
+            spec = spec.and(EntitySpecification.withBloodGroup(request.bloodGroup().get()));
+        }
+
+        Page<Patient> patients = patientRepo.findAll(spec, pageable);
+
+        return patients.map(PatientService::toResponse);
     }
 
     @Override

@@ -6,14 +6,10 @@ import com.example.apollum.models.type.GenderType;
 import java.util.Optional;
 
 public record SearchPatientRequest(
-        String nameContaining,
-        String emailContaining,
-        Optional<AgeRange> age,
+        Optional<String> nameContaining,
+        Optional<String> emailContaining,
+        Optional<PatientAgeRange> age,
         Optional<GenderType> gender,
         Optional<BloodGroupType> bloodGroup
 ) {}
 
-record AgeRange(
-        Optional<Integer> greaterThan,
-        Optional<Integer> lessThan
-) {}

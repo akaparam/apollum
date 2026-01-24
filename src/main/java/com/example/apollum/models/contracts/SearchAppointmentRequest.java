@@ -7,9 +7,3 @@ public record SearchAppointmentRequest(
 ) {
 }
 
-record AppointmentSlot(
-        String startTimeAfter,
-        String startTimeBefore,
-        String endTimeAfter,
-        String endTimeBefore
-) {}
