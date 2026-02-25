@@ -1,0 +1,24 @@
+- Shall roles be in a separate table?
+- Explore Request Caching in spring security?
+- Find a way to invalidate tokens...
+    - If a user is logged out and removed their jwt token should be revoked immediately...
+- Checkout @MapsId and @ElementCollection
+- Plan for valid permissions at endpoints...
+- Implement password policies
+
+- How to enable authorize button in swagger.
+- JwtServiceImpl.isTokenValid: // Check whether user still exists?
+
+> Think about it. Your JWT is supposed to store auth information... ROLES and AUTHORITIES can be fetched from cache right?
+> Verify this thought.
+
+- Why did @PostConstruct work?
+
+======= See if you can implement the following security with JWT ==============
+=> Ensure a patient can only see their records
+    => Even their own insurance.
+=> Ensure a doctor can see all records for all patients and other doctors.
+    => Ensure doctor can see / edit / create appointments for their own profile
+    => Ensure a doctor can edit only their profile and settings (not patients / and other doctors)
+    => Only head doctor is allowed to execute commands on their department (rest can query other departments)
+=> ADMIN can do everything (but should they be allowed to change appointments on behalf of other users?)

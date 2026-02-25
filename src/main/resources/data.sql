@@ -68,3 +68,7 @@ INSERT INTO department_doctor (department_id, doctor_id) VALUES
   ('55555555-eeee-4b55-9555-eeeeeeeeeee5', 'c3e4f5a6-b7c8-49da-9345-6789012cde33'), -- Dr. Priya Menon (Head)
   ('55555555-eeee-4b55-9555-eeeeeeeeeee5', '29ea0b1c-1234-4f30-f901-234567800139'); -- Dr. Aisha Siddiqui
 
+INSERT INTO accounts (id, username, password, role) VALUES
+    ('11111111-1111-1111-1111-111111111111', 'patient', '{bcrypt}$2a$10$Pxb94GprTpyinMPidOpNze84JJxaTF91gnNQRJalV9PLwfk4vECmG', 'PATIENT'),
+    ('22222222-2222-2222-2222-222222222222', 'doctor', '{bcrypt}$2a$10$Pxb94GprTpyinMPidOpNze84JJxaTF91gnNQRJalV9PLwfk4vECmG', 'DOCTOR'),
+    ('33333333-3333-3333-3333-333333333333', 'admin', '{bcrypt}$2a$10$Pxb94GprTpyinMPidOpNze84JJxaTF91gnNQRJalV9PLwfk4vECmG', 'ADMIN');

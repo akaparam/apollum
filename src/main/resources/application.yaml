@@ -1,3 +1,14 @@
+app:
+  security:
+    jwt:
+      expiry:
+        accessToken: 900000 # 15 * 60 * 1000
+        refreshToken: 604800000 # 7 * 24 * 60 * 60 * 1000
+      issuer: http://localhost:8080/
+      audiences:
+        - http://localhost:8080/
+      secret: "RGvn4bm2Xs#Tf66^&kOy45xd%4r4hw%&qDwI*hHlF1xi&xtpvlLF6Ji0!t66dnOo"
+
 spring:
   application:
     name: apollum
@@ -18,6 +29,11 @@ spring:
     init:
       mode: never # This tells spring "when" to run SQL init scripts
       data-locations: classpath:data.sql
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: Ukd2bjRibTJYcyNUZjY2XiZrT3k0NXhkJTRyNGh3JSZxRHdJKmhIbEYxeGkmeHRwdmxMRjZKaTAhdDY2ZG5Pbw==
 
 springdoc:
   api-docs:
